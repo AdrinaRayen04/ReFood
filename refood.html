@@ -1,0 +1,709 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReFood - Fight Food Waste Together</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .navbar {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+        .nav-links a:hover {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .role-selector {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+        .role-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 280px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        .role-card:hover::before {
+            left: 100%;
+        }
+        .role-card:hover {
+            transform: translateY(-10px);
+            border-color: #10b981;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+        }
+        .role-card.active {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .role-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+        .role-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: white;
+            fill: none;
+        }
+        .role-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #f1f5f9;
+        }
+        .role-card p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        .dashboard {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .dashboard.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #10b981;
+            margin: 0.5rem 0;
+        }
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .action-section {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.875rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 12px;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .food-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .food-item {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .food-item:hover {
+            border-color: #10b981;
+            transform: translateX(5px);
+        }
+        .food-details h4 {
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
+        }
+        .food-meta {
+            display: flex;
+            gap: 1rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        .badge-warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+        .btn-secondary {
+            background: rgba(148, 163, 184, 0.2);
+            color: #cbd5e1;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .btn-secondary:hover {
+            background: rgba(148, 163, 184, 0.3);
+        }
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+            z-index: 2000;
+            display: none;
+        }
+        .notification.show {
+            display: block;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .chart-container {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .chart-container h3 {
+            margin-bottom: 1.5rem;
+            color: #f1f5f9;
+        }
+        canvas {
+            max-height: 300px;
+        }
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .role-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            ReFood
+        </div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#impact">Impact</a>
+            <button class="btn-primary" onclick="scrollToRoles()">Get Started</button>
+        </div>
+    </nav>
+    <section class="hero" id="home">
+        <h1>Fight Food Waste Together</h1>
+        <p>Connect surplus food with those who need it. AI-powered, real-time matching for a sustainable future.</p>
+        <div class="role-selector" id="roleSelector">
+            <div class="role-card" onclick="selectRole('donor')">
+                <div class="role-icon"> <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                </div>
+                <h3>I'm a Donor</h3>
+                <p>Restaurant, canteen, or individual with surplus food</p>
+            </div>
+            <div class="role-card" onclick="selectRole('receiver')">
+                <div class="role-icon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                </div>
+                <h3>I'm a Receiver</h3>
+                <p>NGO, food bank, or shelter accepting donations</p>
+            </div>
+            <div class="role-card" onclick="selectRole('volunteer')">
+                <div class="role-icon"> <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                </div>
+                <h3>I'm a Volunteer</h3>
+                <p>Delivery partner helping transport food</p>
+            </div>
+        </div>
+    </section>
+    <!-- Donor Dashboard -->
+    <div class="dashboard" id="donorDashboard">
+        <h2 style="margin-bottom: 2rem; font-size: 2rem;">Donor Dashboard</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Donations</div>
+                <div class="stat-value" id="totalDonations">0</div>
+                <span class="badge badge-success">+12% this week</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Meals Served</div>
+                <div class="stat-value" id="mealsServed">0</div>
+                <span class="badge badge-success">Impact Growing</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">CO₂ Saved (kg)</div>
+                <div class="stat-value" id="co2Saved">0</div>
+                <span class="badge badge-success">Eco-Friendly</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Predicted Waste (Next Day)</div>
+                <div class="stat-value" id="predictedWaste">15kg</div>
+                <span class="badge badge-warning">AI Prediction</span>
+            </div>
+        </div>
+        <div class="action-section">
+            <h3 style="margin-bottom: 1.5rem;">Add Surplus Food</h3>
+            <form id="donorForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Food Type</label>
+                        <input type="text" id="foodType" placeholder="e.g., Rice, Curry, Snacks" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="text" id="quantity" placeholder="e.g., 10 servings or 5kg" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Expiry Window</label>
+                        <select id="expiry" required>
+                            <option value="">Select timeframe</option>
+                            <option value="2 hours">Within 2 hours</option>
+                            <option value="4 hours">Within 4 hours</option>
+                            <option value="6 hours">Within 6 hours</option>
+                            <option value="12 hours">Within 12 hours</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Pickup Location</label>
+                        <input type="text" id="location" placeholder="Auto-detected: Chennai, Tamil Nadu" value="Chennai, Tamil Nadu">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Add Surplus Food</button>
+            </form>
+        </div>
+        <div class="chart-container">
+            <h3>Weekly Donation Trends</h3>
+            <canvas id="donationChart"></canvas>
+        </div>
+        <div class="action-section">
+            <h3 style="margin-bottom: 1.5rem;">Recent Donations</h3>
+            <div class="food-list" id="donationList">
+                <div class="food-item">
+                    <div class="food-details">
+                        <h4>Sample Biryani</h4>
+                        <div class="food-meta">
+                            <span>📦 20 servings</span>
+                            <span>⏱️ Expires in 3 hours</span>
+                            <span>📍 2.5 km away</span>
+                        </div>
+                    </div>
+                    <span class="badge badge-success">Delivered</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Receiver Dashboard -->
+    <div class="dashboard" id="receiverDashboard">
+        <h2 style="margin-bottom: 2rem; font-size: 2rem;">Receiver Dashboard</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Food Received</div>
+                <div class="stat-value">0</div>
+                <span class="badge badge-success">Active</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">People Fed</div>
+                <div class="stat-value">0</div>
+                <span class="badge badge-success">Growing</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Donors</div>
+                <div class="stat-value">0</div>
+                <span class="badge badge-success">Connected</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Delivery Time</div>
+                <div class="stat-value">45min</div>
+                <span class="badge badge-success">Fast</span>
+            </div>
+        </div>
+        <div class="action-section">
+            <h3 style="margin-bottom: 1.5rem;">Available Food Nearby</h3>
+            <div class="food-list">
+                <div class="food-item">
+                    <div class="food-details">
+                        <h4>Fresh Vegetable Curry</h4>
+                        <div class="food-meta">
+                            <span>📦 15 servings</span>
+                            <span>⏱️ Expires in 2 hours</span>
+                            <span>📍 1.8 km away</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary">Accept</button>
+                </div>
+                <div class="food-item">
+                    <div class="food-details">
+                        <h4>Rice & Dal</h4>
+                        <div class="food-meta">
+                            <span>📦 25 servings</span>
+                            <span>⏱️ Expires in 4 hours</span>
+                            <span>📍 3.2 km away</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary">Accept</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Volunteer Dashboard -->
+    <div class="dashboard" id="volunteerDashboard">
+        <h2 style="margin-bottom: 2rem; font-size: 2rem;">Volunteer Dashboard</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Deliveries</div>
+                <div class="stat-value">0</div>
+                <span class="badge badge-success">Hero Status</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Distance Covered</div>
+                <div class="stat-value">0km</div>
+                <span class="badge badge-success">Moving</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Impact Points</div>
+                <div class="stat-value">0</div>
+                <span class="badge badge-warning">Bronze</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Next Delivery</div>
+                <div class="stat-value">--</div>
+                <span class="badge badge-success">Ready</span>
+            </div>
+        </div>
+        <div class="action-section">
+            <h3 style="margin-bottom: 1.5rem;">Available Pickups</h3>
+            <div class="food-list">
+                <div class="food-item">
+                    <div class="food-details">
+                        <h4>Pickup from College Canteen</h4>
+                        <div class="food-meta">
+                            <span>📦 30 servings</span>
+                            <span>📍 2.1 km away</span>
+                            <span>🎯 Deliver to Hope Foundation</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary">Accept Delivery</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="notification" id="notification"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let selectedRole = null;
+        let donations = [];
+        function scrollToRoles() {
+            document.getElementById('roleSelector').scrollIntoView({ behavior: 'smooth' });
+        }
+        function selectRole(role) {
+            selectedRole = role;   
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.dashboard').forEach(dash => {
+                dash.classList.remove('active');
+            });
+            setTimeout(() => {
+                document.getElementById(role + 'Dashboard').classList.add('active');
+                document.getElementById(role + 'Dashboard').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+            showNotification(`Welcome, ${role}! Your dashboard is ready.`);
+        }
+        function showNotification(message) {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+            notif.classList.add('show');
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        }
+        document.getElementById('donorForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const foodType = document.getElementById('foodType').value;
+            const quantity = document.getElementById('quantity').value;
+            const expiry = document.getElementById('expiry').value;
+            const location = document.getElementById('location').value;
+            const donation = {
+                id: Date.now(),
+                foodType,
+                quantity,
+                expiry,
+                location,
+                status: 'Pending',
+                timestamp: new Date().toLocaleString()
+            };
+            donations.push(donation);
+            const totalDonations = donations.length;
+            const mealsServed = totalDonations * 15;
+            const co2Saved = Math.round(mealsServed * 0.5);
+            document.getElementById('totalDonations').textContent = totalDonations;
+            document.getElementById('mealsServed').textContent = mealsServed;
+            document.getElementById('co2Saved').textContent = co2Saved;
+            const donationList = document.getElementById('donationList');
+            const newItem = document.createElement('div');
+            newItem.className = 'food-item';
+            newItem.innerHTML = `
+                <div class="food-details">
+                    <h4>${foodType}</h4>
+                    <div class="food-meta">
+                        <span>📦 ${quantity}</span>
+                        <span>⏱️ Expires in ${expiry}</span>
+                        <span>📍 ${location}</span>
+                    </div>
+                </div>
+                <span class="badge badge-warning">Pending Pickup</span>
+            `;
+            donationList.insertBefore(newItem, donationList.firstChild);
+            showNotification('✅ Surplus food added! Matching with nearby NGOs...');
+            this.reset();
+            document.getElementById('location').value = 'Chennai, Tamil Nadu';
+            updateChart();
+        });
+        let donationChart = null;
+        function updateChart() {
+            const ctx = document.getElementById('donationChart');
+            if (!ctx) return;
+            if (donationChart) {
+                donationChart.destroy();
+            }
+            donationChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Donations (kg)',
+                        data: [12, 19, 15, 25, 22, 30, donations.length * 5],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#cbd5e1'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        window.addEventListener('load', updateChart);
+    </script>
+</body>
+</html>
